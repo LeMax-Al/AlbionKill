@@ -94,20 +94,18 @@ input::placeholder{color:var(--mute)}
 </main>
 
 <script>
-const BASE='https://gameinfo-ams.albiononline.com/api/gameinfo/', NAME='LeMax', PAGE=40;
+const BASE='https://albionkill.maxbruneteau.workers.dev/api/gameinfo/', NAME='LeMax', PAGE=40;
 const SLOTS=['MainHand','OffHand','Head','Armor','Shoes','Cape','Bag','Mount','Potion','Food'];
 const $=id=>document.getElementById(id), nf=new Intl.NumberFormat('fr-FR');
 const D={kills:[],deaths:[]}, S={kills:{q:'',sort:'date',shown:0,view:[]},deaths:{q:'',sort:'date',shown:0,view:[]}};
 
 function el(t,p,...k){const e=document.createElement(t);Object.assign(e,p||{});k.forEach(x=>x!=null&&e.append(x));return e}
 function status(t,err){const s=$('status');s.textContent=t;s.className=err?'err':''}
-const VIA=[u=>u,u=>'https://corsproxy.io/?url='+encodeURIComponent(u),u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u)];
-let via=0;
 async function api(p){
-  const u=BASE+p;let last;
-  for(let i=via;i<VIA.length;i++){
-    try{const r=await fetch(VIA[i](u));if(!r.ok)throw new Error('Erreur API '+r.status);const j=await r.json();via=i;return j}
-    catch(e){last=e}
+  let last;
+  for(let i=0;i<3;i++){
+    try{const r=await fetch(BASE+p);if(!r.ok)throw new Error('Erreur API '+r.status);return await r.json()}
+    catch(e){last=e;await new Promise(r=>setTimeout(r,600))}
   }
   throw new Error('Connexion à l’API d’Albion impossible ('+((last&&last.message)||'réseau')+')');
 }
