@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>LeMax – Albion Online</title>
+<style>
+:root{color-scheme:dark;--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--ink:#f5f5f7;--mute:#98989d;--line:rgba(255,255,255,.08);--green:#30d158;--red:#ff453a;--blue:#0a84ff;--gold:#ffd60a;--r:20px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main{max-width:980px;margin:0 auto;padding:28px 18px 70px}
+h1{font-size:clamp(2.4rem,8vw,3.6rem);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.05}
+h2{font-size:1.35rem;font-weight:600;letter-spacing:-.02em;margin:34px 0 12px}
+.sub{color:var(--mute);margin:4px 0 0}
+#status{color:var(--mute);margin:14px 0;min-height:1.4em;font-size:.95rem}
+#status.err{color:var(--red)}
+nav{position:sticky;top:0;z-index:5;margin:18px -18px 0;padding:10px 18px;background:rgba(0,0,0,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);display:none}
+.seg{display:flex;background:var(--card);border-radius:12px;padding:3px;gap:2px}
+.seg button{flex:1;border:0;background:transparent;color:var(--mute);font:inherit;font-weight:600;font-size:.95rem;padding:8px 0;border-radius:10px;cursor:pointer;transition:background .25s,color .25s}
+.seg button[aria-selected=true]{background:var(--card2);color:var(--ink)}
+.view{display:none}
+.view.on{display:block;animation:in .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.on{animation:none}*{transition:none!important}}
+.card{background:var(--card);border-radius:var(--r);padding:18px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+@media(min-width:700px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tile small{color:var(--mute);font-size:.85rem}
+.tile b{display:block;font-size:2.1rem;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-top:2px}
+.g{color:var(--green)}.r{color:var(--red)}.gold{color:var(--gold)}
+.legend{display:flex;gap:16px;color:var(--mute);font-size:.85rem;margin-bottom:8px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+svg{width:100%;display:block;overflow:visible}
+.hours{display:flex;align-items:flex-end;gap:3px;height:90px}
+.hours div{flex:1;background:var(--blue);border-radius:4px 4px 1px 1px;min-height:2px;opacity:.9}
+.hl{display:flex;justify-content:space-between;color:var(--mute);font-size:.75rem;margin-top:6px}
+.two{display:grid;gap:12px}
+@media(min-width:700px){.two{grid-template-columns:1fr 1fr}}
+.bars div{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:.95rem}
+.bars span{flex:0 0 38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars i{display:block;height:8px;border-radius:4px;background:var(--green)}
+.bars.d i{background:var(--red)}
+.bars em{font-style:normal;color:var(--mute);margin-left:auto}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:600;background:var(--card2)}
+.badge.up{background:rgba(48,209,88,.16);color:var(--green)}
+.badge.down{background:rgba(255,69,58,.16);color:var(--red)}
+.vs{display:grid;gap:14px;margin-top:12px}
+@media(min-width:700px){.vs{grid-template-columns:1fr 1fr}}
+.side h4{margin:0 0 2px;font-size:1.05rem;font-weight:600}
+.side p{margin:0 0 8px;color:var(--mute);font-size:.88rem}
+.gear{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.slot{aspect-ratio:1;background:var(--card2);border-radius:12px;overflow:hidden;display:block}
+.slot img{width:100%;height:100%;display:block}
+.tools{display:flex;gap:8px;margin:16px 0 10px}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:0;border-radius:12px;padding:10px 14px;min-width:0}
+input{flex:1}
+input::placeholder{color:var(--mute)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.list{background:var(--card);border-radius:var(--r);overflow:hidden}
+.row{border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.head{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:12px 16px;cursor:pointer;transition:background .2s}
+.head:hover{background:rgba(255,255,255,.04)}
+.head img{width:44px;height:44px;border-radius:10px;background:var(--card2);flex:none}
+.head .m{flex:1;min-width:0}
+.head .m b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head .m small{color:var(--mute);font-size:.85rem}
+.head .e{text-align:right;flex:none}
+.head .e small{display:block;color:var(--mute);font-size:.8rem}
+.detail{display:none;padding:2px 16px 18px}
+.row.open .detail{display:block;animation:in .3s ease}
+.detail a{color:var(--blue);text-decoration:none;font-size:.95rem;display:inline-block;margin-top:12px}
+.btn{display:block;margin:16px auto 0;border:0;background:var(--card);color:var(--blue);font:inherit;font-weight:600;padding:11px 22px;border-radius:99px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<h1>LeMax</h1>
+<p class="sub">Albion Online · serveur Europe</p>
+<div id="status" role="status">Chargement…</div>
+<nav id="nav"><div class="seg" role="tablist">
+<button role="tab" data-v="sum" aria-selected="true">Résumé</button>
+<button role="tab" data-v="kills" aria-selected="false">Kills</button>
+<button role="tab" data-v="deaths" aria-selected="false">Morts</button>
+</div></nav>
+
+<section class="view on" id="v-sum"></section>
+<section class="view" id="v-kills"></section>
+<section class="view" id="v-deaths"></section>
+</main>
+
+<script>
+const BASE='https://gameinfo-ams.albiononline.com/api/gameinfo/', NAME='LeMax', PAGE=40;
+const SLOTS=['MainHand','OffHand','Head','Armor','Shoes','Cape','Bag','Mount','Potion','Food'];
+const $=id=>document.getElementById(id), nf=new Intl.NumberFormat('fr-FR');
+const D={kills:[],deaths:[]}, S={kills:{q:'',sort:'date',shown:0,view:[]},deaths:{q:'',sort:'date',shown:0,view:[]}};
+
+function el(t,p,...k){const e=document.createElement(t);Object.assign(e,p||{});k.forEach(x=>x!=null&&e.append(x));return e}
+function status(t,err){const s=$('status');s.textContent=t;s.className=err?'err':''}
+async function api(p){const r=await fetch(BASE+p);if(!r.ok)throw new Error('Erreur API '+r.status);return r.json()}
+const ip=p=>Math.round((p&&p.AverageItemPower)||0);
+const me=(e,m)=>m==='deaths'?e.Victim:(e.Killer.Name===NAME?e.Killer:((e.Participants||[]).find(p=>p.Name===NAME)||e.Killer));
+const foe=(e,m)=>m==='deaths'?e.Killer:e.Victim;
+const dkey=e=>new Date(e.TimeStamp).toLocaleDateString('fr-CA');
+const fmtDate=e=>new Date(e.TimeStamp).toLocaleString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const icon=(p,s)=>{const it=p&&p.Equipment&&p.Equipment.MainHand;return it&&it.Type?'https://render.albiononline.com/v1/item/'+it.Type+'.png?size=64&quality='+(it.Quality||1):''};
+
+async function fetchAll(id,kind,label){
+  const out=[],seen=new Set();let off=0,idle=0;
+  while(true){
+    let b;try{b=await api('players/'+id+'/'+kind+'?limit=51&offset='+off)}catch(err){if(out.length)break;throw err}
+    if(!Array.isArray(b)||!b.length)break;
+    let add=0;b.forEach(e=>{if(!seen.has(e.EventId)){seen.add(e.EventId);out.push(e);add++}});
+    off+=b.length;status(label+' : '+nf.format(out.length)+'…');
+    if(!add&&++idle>1)break;
+    await new Promise(r=>setTimeout(r,150));
+  }
+  return out;
+}
+
+function gear(p){
+  const d=el('div',{className:'gear'});
+  SLOTS.forEach(s=>{const it=p&&p.Equipment&&p.Equipment[s],c=el('span',{className:'slot'});
+    if(it&&it.Type)c.append(el('img',{src:'https://render.albiononline.com/v1/item/'+it.Type+'.png?size=64&quality='+(it.Quality||1),alt:s,loading:'lazy'}));
+    d.append(c)});
+  return d;
+}
+function builds(e,m){
+  const a=me(e,m),b=foe(e,m),vs=el('div',{className:'vs'});
+  [[a,NAME],[b,b.Name]].forEach(([p,n])=>{
+    vs.append(el('div',{className:'side'},el('h4',{textContent:n}),el('p',{textContent:'IP '+nf.format(ip(p))+(p.GuildName?' · '+p.GuildName:'')}),gear(p)));
+  });
+  return vs;
+}
+function gap(e,m){return ip(foe(e,m))-ip(me(e,m))}
+function gapBadge(g,m){
+  const good=m==='kills'?g>0:g<0;
+  return el('span',{className:'badge '+(g===0?'':(good?'up':'down')),textContent:(g>0?'+':'')+nf.format(g)+' IP'});
+}
+
+function lineChart(days){
+  const W=600,H=150,P=8,max=Math.max(1,...days.map(d=>Math.max(d.k,d.m))),n=days.length-1||1;
+  const X=i=>P+i*(W-2*P)/n,Y=v=>H-P-v/max*(H-2*P-10);
+  const path=k=>{let d='M'+X(0)+','+Y(days[0][k]);for(let i=1;i<days.length;i++){const x0=X(i-1),x1=X(i),mx=(x0+x1)/2;d+=' C'+mx+','+Y(days[i-1][k])+' '+mx+','+Y(days[i][k])+' '+x1+','+Y(days[i][k])}return d};
+  const NS='http://www.w3.org/2000/svg',svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 '+W+' '+(H+18));
+  svg.setAttribute('role','img');svg.setAttribute('aria-label','Kills et morts par jour sur 30 jours');
+  const add=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);svg.append(e);return e};
+  [0,.5,1].forEach(f=>add('line',{x1:P,x2:W-P,y1:Y(max*f),y2:Y(max*f),stroke:'rgba(255,255,255,.08)'}));
+  [['k','#30d158'],['m','#ff453a']].forEach(([k,c])=>{
+    add('path',{d:path(k)+' L'+X(days.length-1)+','+(H-P)+' L'+X(0)+','+(H-P)+' Z',fill:c,'fill-opacity':.1});
+    add('path',{d:path(k),fill:'none',stroke:c,'stroke-width':2.5,'stroke-linecap':'round','stroke-linejoin':'round'});
+  });
+  [0,days.length-1].forEach(i=>{const t=add('text',{x:X(i),y:H+14,fill:'#98989d','font-size':11,'text-anchor':i?'end':'start'});t.textContent=new Date(days[i].d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})});
+  return svg;
+}
+
+function topBars(list,cls){
+  const c={};list.forEach(g=>{if(g)c[g]=(c[g]||0)+1});
+  const top=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,5),mx=top.length?top[0][1]:1,box=el('div',{className:'bars '+cls});
+  if(!top.length)box.append(el('p',{className:'sub',textContent:'Aucune donnée.'}));
+  top.forEach(([g,n])=>box.append(el('div',null,el('span',{textContent:g}),el('i',{style:'width:'+Math.max(6,n/mx*40)+'%'}),el('em',{textContent:n}))));
+  return box;
+}
+
+function highlight(title,sub,e,m){
+  if(!e)return el('div',{className:'card'},el('h3',{textContent:title,style:'margin:0'}),el('p',{className:'sub',textContent:'Pas encore de kill à comparer.'}));
+  const g=gap(e,m),f=foe(e,m);
+  const c=el('div',{className:'card'},
+    el('div',{style:'display:flex;justify-content:space-between;align-items:center;gap:10px'},
+      el('div',null,el('h3',{textContent:title,style:'margin:0;font-size:1.1rem'}),el('p',{className:'sub',style:'font-size:.88rem',textContent:sub+' · '+fmtDate(e)})),
+      gapBadge(g,m)),
+    el('p',{style:'margin:10px 0 0;font-size:1.05rem',textContent:(m==='kills'?'Victime : ':'Tué par : ')+f.Name+(f.GuildName?' ['+f.GuildName+']':'')+' · '+nf.format(e.TotalVictimKillFame||0)+' fame'}),
+    builds(e,m));
+  return c;
+}
+
+function summary(){
+  const K=D.kills,M=D.deaths,v=$('v-sum');v.replaceChildren();
+  const fame=K.reduce((s,e)=>s+(e.TotalVictimKillFame||0),0);
+  const tiles=el('div',{className:'tiles'});
+  [['Kills',nf.format(K.length),'g'],['Morts',nf.format(M.length),'r'],['Ratio K/D',M.length?(K.length/M.length).toFixed(2):'–',''],['Fame gagnée',nf.format(fame),'gold']]
+    .forEach(([t,x,c])=>tiles.append(el('div',{className:'card tile'},el('small',{textContent:t}),el('b',{className:c,textContent:x}))));
+  v.append(tiles);
+
+  const days=[];for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({d:d.toISOString().slice(0,10),key:d.toLocaleDateString('fr-CA'),k:0,m:0})}
+  const idx={};days.forEach((x,i)=>idx[x.key]=i);
+  K.forEach(e=>{const i=idx[dkey(e)];if(i!=null)days[i].k++});M.forEach(e=>{const i=idx[dkey(e)];if(i!=null)days[i].m++});
+  v.append(el('h2',{textContent:'30 derniers jours'}));
+  const ch=el('div',{className:'card'},el('div',{className:'legend'},el('span',null,el('i',{style:'background:#30d158'}),'Kills'),el('span',null,el('i',{style:'background:#ff453a'}),'Morts')),lineChart(days));
+  v.append(ch);
+
+  const lastKey=K.length?K.map(dkey).sort().pop():null;
+  const today=K.filter(e=>dkey(e)===lastKey);
+  const best=list=>list.reduce((a,b)=>(!a||Math.abs(gap(b,'kills'))>Math.abs(gap(a,'kills')))?b:a,null);
+  const isToday=lastKey===new Date().toLocaleDateString('fr-CA');
+  v.append(el('h2',{textContent:isToday?'Kill du jour':'Dernier jour actif'}));
+  v.append(highlight('Plus grand écart d’IP',isToday?'Aujourd’hui':(lastKey?new Date(lastKey).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}):''),best(today),'kills'));
+  const strong=K.filter(e=>gap(e,'kills')>0);
+  v.append(el('h2',{textContent:'Record'}));
+  v.append(highlight('Kill face au plus fort','Plus gros écart en ta défaveur',strong.reduce((a,b)=>(!a||gap(b,'kills')>gap(a,'kills'))?b:a,null),'kills'));
+
+  const h=Array(24).fill(0);K.concat(M).forEach(e=>h[new Date(e.TimeStamp).getHours()]++);
+  const hm=Math.max(1,...h),hb=el('div',{className:'hours'});h.forEach((n,i)=>hb.append(el('div',{style:'height:'+n/hm*100+'%',title:i+' h : '+n})));
+  v.append(el('h2',{textContent:'Heures de jeu'}),el('div',{className:'card'},hb,el('div',{className:'hl'},el('span',{textContent:'0 h'}),el('span',{textContent:'12 h'}),el('span',{textContent:'23 h'}))));
+
+  v.append(el('h2',{textContent:'Guildes'}));
+  v.append(el('div',{className:'two'},
+    el('div',{className:'card'},el('h3',{textContent:'Les plus tuées',style:'margin:0 0 4px;font-size:1.05rem'}),topBars(K.map(e=>e.Victim.GuildName),'')),
+    el('div',{className:'card'},el('h3',{textContent:'T’ont le plus tué',style:'margin:0 0 4px;font-size:1.05rem'}),topBars(M.map(e=>e.Killer.GuildName),'d'))));
+}
+
+function listView(m){
+  const v=$('v-'+m),s=S[m];v.replaceChildren();
+  const q=el('input',{type:'search',placeholder:'Rechercher un nom ou une guilde','aria-label':'Rechercher'});
+  const so=el('select',{'aria-label':'Tri'});[['date','Récents'],['dateAsc','Anciens'],['fame','Fame'],['gap','Écart d’IP']].forEach(([a,b])=>so.append(el('option',{value:a,textContent:b})));
+  const list=el('div',{className:'list'}),more=el('button',{className:'btn',textContent:'Afficher plus'});
+  v.append(el('div',{className:'tools'},q,so),list,more);
+  const sorts={date:(a,b)=>new Date(b.TimeStamp)-new Date(a.TimeStamp),dateAsc:(a,b)=>new Date(a.TimeStamp)-new Date(b.TimeStamp),fame:(a,b)=>b.TotalVictimKillFame-a.TotalVictimKillFame,gap:(a,b)=>Math.abs(gap(b,m))-Math.abs(gap(a,m))};
+  function apply(){
+    const t=q.value.trim().toLowerCase();
+    s.view=D[m].filter(e=>{const f=foe(e,m);return !t||[f.Name,f.GuildName,f.AllianceName].some(x=>(x||'').toLowerCase().includes(t))}).sort(sorts[so.value]);
+    s.shown=0;list.replaceChildren();next();
+  }
+  function next(){
+    s.view.slice(s.shown,s.shown+PAGE).forEach(e=>{
+      const f=foe(e,m),im=icon(f),row=el('div',{className:'row'});
+      const head=el('button',{className:'head','aria-expanded':'false'},
+        im?el('img',{src:im,alt:'',loading:'lazy'}):el('span',{style:'width:44px;height:44px;flex:none'}),
+        el('div',{className:'m'},el('b',{textContent:f.Name}),el('small',{textContent:(f.GuildName||'Sans guilde')+' · '+fmtDate(e)})),
+        el('div',{className:'e'},gapBadge(gap(e,m),m),el('small',{textContent:nf.format(e.TotalVictimKillFame||0)+' fame'})));
+      const det=el('div',{className:'detail'});
+      head.onclick=()=>{const o=row.classList.toggle('open');head.setAttribute('aria-expanded',o);if(o&&!det.children.length){det.append(builds(e,m),el('a',{href:'https://albiononline.com/killboard/kill/'+e.EventId,target:'_blank',rel:'noopener',textContent:'Voir sur le killboard'}))}};
+      row.append(head,det);list.append(row);
+    });
+    s.shown=Math.min(s.shown+PAGE,s.view.length);
+    more.style.display=s.shown<s.view.length?'block':'none';
+    more.textContent='Afficher plus ('+nf.format(s.view.length-s.shown)+')';
+  }
+  more.onclick=next;q.oninput=apply;so.onchange=apply;apply();
+}
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+b.dataset.v));
+  scrollTo({top:0});
+});
+
+(async()=>{
+  try{
+    const r=await api('search?q='+NAME),p=(r.players||[]).find(x=>x.Name.toLowerCase()===NAME.toLowerCase());
+    if(!p){status('Joueur LeMax introuvable sur le serveur Europe.',true);return}
+    D.kills=await fetchAll(p.Id,'kills','Kills');
+    D.deaths=await fetchAll(p.Id,'deaths','Morts');
+    status(nf.format(D.kills.length)+' kills et '+nf.format(D.deaths.length)+' morts dans l’historique disponible.');
+    $('nav').style.display='block';summary();listView('kills');listView('deaths');
+  }catch(err){status(err.message+'. Recharge la page pour réessayer.',true)}
+})();
+</script>
+</body>
+</html>
