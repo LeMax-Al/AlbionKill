@@ -101,7 +101,16 @@ const D={kills:[],deaths:[]}, S={kills:{q:'',sort:'date',shown:0,view:[]},deaths
 
 function el(t,p,...k){const e=document.createElement(t);Object.assign(e,p||{});k.forEach(x=>x!=null&&e.append(x));return e}
 function status(t,err){const s=$('status');s.textContent=t;s.className=err?'err':''}
-async function api(p){const r=await fetch(BASE+p);if(!r.ok)throw new Error('Erreur API '+r.status);return r.json()}
+const VIA=[u=>u,u=>'https://corsproxy.io/?url='+encodeURIComponent(u),u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u)];
+let via=0;
+async function api(p){
+  const u=BASE+p;let last;
+  for(let i=via;i<VIA.length;i++){
+    try{const r=await fetch(VIA[i](u));if(!r.ok)throw new Error('Erreur API '+r.status);const j=await r.json();via=i;return j}
+    catch(e){last=e}
+  }
+  throw new Error('Connexion à l’API d’Albion impossible ('+((last&&last.message)||'réseau')+')');
+}
 const ip=p=>Math.round((p&&p.AverageItemPower)||0);
 const me=(e,m)=>m==='deaths'?e.Victim:(e.Killer.Name===NAME?e.Killer:((e.Participants||[]).find(p=>p.Name===NAME)||e.Killer));
 const foe=(e,m)=>m==='deaths'?e.Killer:e.Victim;
